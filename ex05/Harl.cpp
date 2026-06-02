@@ -6,7 +6,7 @@
 /*   By: kfuto <kfuto@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/02 16:31:10 by kfuto             #+#    #+#             */
-/*   Updated: 2026/06/02 16:31:11 by kfuto            ###   ########.fr       */
+/*   Updated: 2026/06/02 16:34:18 by kfuto            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,20 @@ void Harl::error(void)
 
 void Harl::complain(std::string level)
 {
-    typedef void (Harl::*Action)(void);
-    static const std::string levels[4] = {"DEBUG", "INFO", "WARNING", "ERROR"};
-    static const Action actions[4] = {&Harl::debug, &Harl::info, &Harl::warning, &Harl::error};
+    void	        (Harl::*funcPtr)(void) = NULL;
+	void	        (Harl::*array[4])(void) = {&Harl::debug, &Harl::info, &Harl::warning, &Harl::error};
+	std::string     arrayLevel[4] = {"DEBUG", "INFO", "WARNING", "ERROR"};
 
-    for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 4; i++)
     {
-        if (levels[i] == level)
+		if (arrayLevel[i] == level)
         {
-            (this->*actions[i])();
-            return;
+            funcPtr = array[i];
+            break;
         }
-    }
+	}
+	if (!funcPtr) 
+		std::cout << "\033[1;31m Error! \033[0m Invalid Harl's complain level!" << std::endl; 
+    else
+	    (this->*funcPtr)();
 }
